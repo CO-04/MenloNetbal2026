@@ -129,6 +129,13 @@
   .teen-vs { color: #999; font-size: 0.78rem; margin: 0 4px; font-style: italic; }
   .teen-name { color: #c0392b; }
   .teen-ou { color: #888; font-size: 0.78rem; font-weight: 400; margin-left: 5px; }
+  .tyd-now strong { color: #b45309; }
+  .tyd-now::after { content: ' \25C4'; color: #f5a623; font-size: 0.7rem; }
+  tr.row-now > td:nth-child(2) {
+    background: #fff3cd;
+    border-radius: 6px;
+    font-weight: 700;
+  }
   @media (max-width: 768px) {
     header { padding: 16px; }
     header h1 { font-size: 1.2rem; }
@@ -371,6 +378,19 @@ function loadFromURL() {
   if (params.toString()) applyFilters();
 }
 
+function getCurrentSlot() {
+  const now = new Date();
+  const dateMap = [
+    { dag: 'Dag1', y: 2026, m: 2, d: 31 },
+    { dag: 'Dag2', y: 2026, m: 3, d:  1 },
+    { dag: 'Dag3', y: 2026, m: 3, d:  2 },
+    { dag: 'Dag4', y: 2026, m: 3, d:  4 },
+  ];
+  const entry = dateMap.find(e => now.getFullYear()===e.y && now.getMonth()===e.m && now.getDate()===e.d);
+  if (!entry) return null;
+  return { dag: entry.dag, cur: now.getHours() * 60 + now.getMinutes() };
+}
+
 function applyFilters() {
   const spanVal = document.getElementById('f-span').value.trim().toLowerCase();
   const ouVal   = document.getElementById('f-ou').value;
@@ -426,9 +446,14 @@ function applyFilters() {
           ? `<span class="teen-vs">teen</span><span class="teen-name">${r.opp}</span>`
           : `<span class="teen-name">${r.opp}</span>${matchOu ? '<span class="teen-ou">(o/'+matchOu+')</span>' : ''}`)
       : '<span style="color:#bbb">—</span>';
-    html += `<tr>
+    const slot = getCurrentSlot();
+    const [startStr, endStr] = r.tyd.split(' - ');
+    const [sh, sm] = startStr.split(':').map(Number);
+    const [eh, em] = endStr.split(':').map(Number);
+    const isNow = slot && r.datum.startsWith(slot.dag) && slot.cur >= sh*60+sm && slot.cur < eh*60+em;
+    html += `<tr${isNow ? ' class="row-now"' : ''}>
       <td data-label="Dag">${r.datum}</td>
-      <td data-label="Tyd"><strong>${r.tyd}</strong></td>
+      <td data-label="Tyd"${isNow ? ' class="tyd-now"' : ''}><strong>${r.tyd}</strong>${isNow ? ' <span style="color:#f5a623;font-size:0.75rem">&#9654; nou</span>' : ''}</td>
       <td data-label="Rondte">R${r.r}</td>
       <td data-label="Kant">${grpPill}</td>
       <td data-label="Baan"><strong>${r.baan}</strong></td>
