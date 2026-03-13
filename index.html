@@ -128,6 +128,7 @@
   .teen-cell { font-weight: 600; }
   .teen-vs { color: #999; font-size: 0.78rem; margin: 0 4px; font-style: italic; }
   .teen-name { color: #c0392b; }
+  .teen-ou { color: #888; font-size: 0.78rem; font-weight: 400; margin-left: 5px; }
   @media (max-width: 768px) {
     header { padding: 16px; }
     header h1 { font-size: 1.2rem; }
@@ -180,6 +181,7 @@
       border: none;
     }
     .day-divider td::before { display: none; }
+    tbody td:nth-child(3) { text-align: left; }
   }
   @media (max-width: 480px) {
     .filters { grid-template-columns: 1fr; }
@@ -351,7 +353,7 @@ function applyFilters() {
 
   let html = '<table>';
   html += '<thead><tr>';
-  html += '<th>Dag</th><th>Tyd</th><th>Rondte</th><th>Grp</th><th>Baan</th><th>Span</th><th>Teen / Blaas vir</th><th>van o/</th><th>Rol</th>';
+  html += '<th>Dag</th><th>Tyd</th><th>Rondte</th><th>Kant</th><th>Baan</th><th>Span</th><th>Teen / Blaas vir</th><th>van o/</th><th>Rol</th>';
   html += '</tr></thead><tbody>';
 
   let lastDag = null;
@@ -365,16 +367,19 @@ function applyFilters() {
       : '<span class="pill pill-skeids">Blaas &#128168;</span>';
     const ouPill  = `<span class="pill pill-ou${r.ou}">o/${r.ou}</span>`;
     const grpPill = `<span class="pill pill-${r.grp.toLowerCase()}">${r.grp}</span>`;
+    const matchOu = r.rol === 'Skeidsregter'
+      ? (DATA.find(d => d.r === r.r && d.baan === r.baan && d.datum === r.datum && d.rol === 'Span') || {}).ou || null
+      : null;
     const teenCell = r.opp
       ? (r.rol === 'Span'
           ? `<span class="teen-vs">teen</span><span class="teen-name">${r.opp}</span>`
-          : `<span class="teen-name">${r.opp}</span>`)
+          : `<span class="teen-name">${r.opp}</span>${matchOu ? '<span class="teen-ou">(o/'+matchOu+')</span>' : ''}`)
       : '<span style="color:#bbb">—</span>';
     html += `<tr>
       <td data-label="Dag">${r.datum}</td>
       <td data-label="Tyd"><strong>${r.tyd}</strong></td>
       <td data-label="Rondte">R${r.r}</td>
-      <td data-label="Grp">${grpPill}</td>
+      <td data-label="Kant">${grpPill}</td>
       <td data-label="Baan"><strong>${r.baan}</strong></td>
       <td data-label="Span">${r.span}</td>
       <td data-label="Teen / Blaas vir" class="teen-cell">${teenCell}</td>
