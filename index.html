@@ -381,14 +381,26 @@ function loadFromURL() {
 function getCurrentSlot() {
   const now = new Date();
   const dateMap = [
-    { dag: 'Dag1', y: 2026, m: 2, d: 31 },
-    { dag: 'Dag2', y: 2026, m: 3, d:  1 },
-    { dag: 'Dag3', y: 2026, m: 3, d:  2 },
-    { dag: 'Dag4', y: 2026, m: 3, d:  4 },
+    { dag: 'Dag1', y: 2026, m: 2, d: 31, idx: 1 },
+    { dag: 'Dag2', y: 2026, m: 3, d:  1, idx: 2 },
+    { dag: 'Dag3', y: 2026, m: 3, d:  2, idx: 3 },
+    { dag: 'Dag4', y: 2026, m: 3, d:  4, idx: 4 },
   ];
-  const entry = dateMap.find(e => now.getFullYear()===e.y && now.getMonth()===e.m && now.getDate()===e.d);
-  if (!entry) return null;
-  return { dag: entry.dag, cur: now.getHours() * 60 + now.getMinutes() };
+  const nowY = now.getFullYear(), nowM = now.getMonth(), nowD = now.getDate();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  // Find index of today in tournament
+  const todayEntry = dateMap.find(e => nowY===e.y && nowM===e.m && nowD===e.d);
+  const todayIdx = todayEntry ? todayEntry.idx : null;
+  // Find the earliest future tournament date to know if tournament hasn't started yet
+  const firstDate = new Date(2026, 2, 31);
+  const isPastTournament = now > new Date(2026, 3, 4, 23, 59);
+  return {
+    dag: todayEntry ? todayEntry.dag : null,
+    cur: nowMin,
+    todayIdx,
+    dagIdx: (dag) => { const e = dateMap.find(x => x.dag === dag); return e ? e.idx : 0; },
+    isPastTournament
+  };
 }
 
 function applyFilters() {
@@ -450,10 +462,14 @@ function applyFilters() {
     const [startStr, endStr] = r.tyd.split(' - ');
     const [sh, sm] = startStr.split(':').map(Number);
     const [eh, em] = endStr.split(':').map(Number);
-    const isNow = slot && r.datum.startsWith(slot.dag) && slot.cur >= sh*60+sm && slot.cur < eh*60+em;
+    const rowDagIdx = slot.dagIdx(r.datum.split(' ')[0]);
+    const isNow  = slot.dag && r.datum.startsWith(slot.dag) && slot.cur >= sh*60+sm && slot.cur < eh*60+em;
+    const isPast = !isNow && slot.todayIdx !== null
+      ? (rowDagIdx < slot.todayIdx) || (rowDagIdx === slot.todayIdx && slot.cur >= eh*60+em)
+      : slot.isPastTournament;
     html += `<tr${isNow ? ' class="row-now"' : ''}>
       <td data-label="Dag">${r.datum}</td>
-      <td data-label="Tyd"${isNow ? ' class="tyd-now"' : ''}><strong>${r.tyd}</strong>${isNow ? ' <span style="color:#f5a623;font-size:0.75rem">&#9654; nou</span>' : ''}</td>
+      <td data-label="Tyd"${isNow ? ' class="tyd-now"' : ''}><strong>${r.tyd}</strong>${isNow ? ' <span style="color:#f5a623;font-size:0.75rem">&#9654; nou</span>' : ''}${isPast ? ' <span style="color:#bbb;font-size:0.72rem">&#10003; Klaar</span>' : ''}</td>
       <td data-label="Rondte">R${r.r}</td>
       <td data-label="Kant">${grpPill}</td>
       <td data-label="Baan"><strong>${r.baan}</strong></td>
