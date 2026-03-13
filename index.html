@@ -102,6 +102,7 @@
   tbody tr:nth-child(even) { background: #fafbfc; }
   tbody tr:nth-child(even):hover { background: var(--green-pale); }
   tbody td { padding: 9px 14px; vertical-align: middle; white-space: nowrap; }
+  tbody td:nth-child(3) { text-align: center; }
   .pill {
     display: inline-block; border-radius: 20px; padding: 2px 10px;
     font-size: 0.78rem; font-weight: 700; white-space: nowrap;
@@ -127,10 +128,61 @@
   .teen-cell { font-weight: 600; }
   .teen-vs { color: #999; font-size: 0.78rem; margin: 0 4px; font-style: italic; }
   .teen-name { color: #c0392b; }
-  @media (max-width: 600px) {
-    header h1 { font-size: 1.3rem; }
-    .container { padding: 12px 8px; }
-    .filter-card { padding: 16px; }
+  @media (max-width: 768px) {
+    header { padding: 16px; }
+    header h1 { font-size: 1.2rem; }
+    header p { font-size: 0.85rem; }
+    .container { padding: 10px 8px; }
+    .filter-card { padding: 14px 12px; }
+    .filters { grid-template-columns: 1fr 1fr; }
+    .btn-row { flex-direction: column; }
+    .btn-row button { width: 100%; }
+    /* Card-style table on mobile */
+    .table-wrap { overflow-x: unset; }
+    table thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tbody tr {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      background: var(--white);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    tbody tr:nth-child(even) { background: var(--white); }
+    tbody td {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 4px 0;
+      white-space: normal;
+      border: none;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    tbody td::before {
+      content: attr(data-label);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      width: 120px;
+      min-width: 120px;
+      flex-shrink: 0;
+      letter-spacing: 0.3px;
+      padding-top: 2px;
+    }
+    .day-divider td {
+      display: block;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      padding: 7px 12px;
+      border: none;
+    }
+    .day-divider td::before { display: none; }
+  }
+  @media (max-width: 480px) {
+    .filters { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -319,15 +371,15 @@ function applyFilters() {
           : `<span class="teen-name">${r.opp}</span>`)
       : '<span style="color:#bbb">—</span>';
     html += `<tr>
-      <td>${r.datum}</td>
-      <td><strong>${r.tyd}</strong></td>
-      <td style="text-align:center">R${r.r}</td>
-      <td>${grpPill}</td>
-      <td><strong>${r.baan}</strong></td>
-      <td>${r.span}</td>
-      <td class="teen-cell">${teenCell}</td>
-      <td>${ouPill}</td>
-      <td>${rolPill}</td>
+      <td data-label="Dag">${r.datum}</td>
+      <td data-label="Tyd"><strong>${r.tyd}</strong></td>
+      <td data-label="Rondte">R${r.r}</td>
+      <td data-label="Grp">${grpPill}</td>
+      <td data-label="Baan"><strong>${r.baan}</strong></td>
+      <td data-label="Span">${r.span}</td>
+      <td data-label="Teen / Blaas vir" class="teen-cell">${teenCell}</td>
+      <td data-label="van o/">${ouPill}</td>
+      <td data-label="Rol">${rolPill}</td>
     </tr>`;
   });
 
