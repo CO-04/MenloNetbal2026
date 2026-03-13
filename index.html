@@ -137,7 +137,7 @@
 <body>
 <header>
   <h1>&#127952; Menlo Laerskole Netbal Toernooi 2026</h1>
-  <p>31 Maart – 4 April 2026 &nbsp;|&nbsp; Program Oopsoek</p>
+  <p>31 Maart – 4 April 2026 &nbsp;|&nbsp; Program Opsoek</p>
 </header>
 <div class="container">
   <div class="filter-card">
@@ -228,7 +228,7 @@
         <select id="f-rol">
           <option value="">— Alle rolle —</option>
           <option value="Span">Span (Speel)</option>
-          <option value="Skeidsregter">Skeidsregter (Fluit)</option>
+          <option value="Skeidsregter">Skeidsregter (Blaas)</option>
         </select>
       </div>
       <div class="filter-group">
@@ -299,7 +299,7 @@ function applyFilters() {
 
   let html = '<table>';
   html += '<thead><tr>';
-  html += '<th>Dag</th><th>Tyd</th><th>Rondte</th><th>Grp</th><th>Baan</th><th>Span</th><th>Teen / Fluit vir</th><th>o/</th><th>Rol</th>';
+  html += '<th>Dag</th><th>Tyd</th><th>Rondte</th><th>Grp</th><th>Baan</th><th>Span</th><th>Teen / Blaas vir</th><th>van o/</th><th>Rol</th>';
   html += '</tr></thead><tbody>';
 
   let lastDag = null;
@@ -310,7 +310,7 @@ function applyFilters() {
     }
     const rolPill = r.rol === 'Span'
       ? '<span class="pill pill-span">Speel</span>'
-      : '<span class="pill pill-skeids">Fluit &#128168;</span>';
+      : '<span class="pill pill-skeids">Blaas &#128168;</span>';
     const ouPill  = `<span class="pill pill-ou${r.ou}">o/${r.ou}</span>`;
     const grpPill = `<span class="pill pill-${r.grp.toLowerCase()}">${r.grp}</span>`;
     const teenCell = r.opp
