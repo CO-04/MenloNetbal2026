@@ -495,6 +495,9 @@ function resetFilters() {
 
 // Load filters from URL on page load
 loadFromURL();
+
+// Auto-refresh results every 5 minutes to keep "nou" / "Klaar" status current
+setInterval(() => { if (document.getElementById('f-span').value || document.getElementById('f-ou').value || document.getElementById('f-rol').value || document.getElementById('f-dag').value) applyFilters(); }, 8 * 60 * 1000);
 </script>
 </body>
 </html>
