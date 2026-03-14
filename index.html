@@ -193,6 +193,44 @@
   @media (max-width: 480px) {
     .filters { grid-template-columns: 1fr; }
   }
+  .share-section {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 32px 24px;
+    margin-top: 24px;
+    text-align: center;
+  }
+  .share-section h2 {
+    font-size: 1.2rem;
+    color: var(--green);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .share-section p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+  .qr-container {
+    display: inline-block;
+    padding: 16px;
+    background: var(--white);
+    border: 2px solid var(--green-light);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(26, 107, 60, 0.15);
+  }
+  .qr-container img {
+    display: block;
+    width: 200px;
+    height: 200px;
+  }
+  .share-url {
+    margin-top: 16px;
+    font-size: 0.85rem;
+    color: #888;
+    word-break: break-all;
+  }
   footer {
     text-align: center;
     padding: 20px 16px;
@@ -340,6 +378,17 @@
           <div>Kies 'n span, ouderdomsgroep of rol hierbo en klik <strong>Soek</strong></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="share-section">
+    <h2>&#128242; Deel hierdie program</h2>
+    <p>Skandeer die QR-kode om die program op jou foon te kry</p>
+    <div class="qr-container">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://co-04.github.io/MenloNetbal2026/" alt="QR Code - Menlo Netbal Program 2026">
+    </div>
+    <div class="share-url">
+      <strong>URL:</strong> https://co-04.github.io/MenloNetbal2026/
     </div>
   </div>
 </div>
